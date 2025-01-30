@@ -1,9 +1,9 @@
-version: '3.3'
+version: '2.3'
 services:
-    petalinux:
+    adi_petalinux:
       volumes:
           - '/opt:/opt'
-          - '/home/${USER}:/home/petalinux'
+          - '/home/${USER}:/home/mathworks'
           - '/local:/local'
       image: adi_petalinux:2021.2
       build: 
