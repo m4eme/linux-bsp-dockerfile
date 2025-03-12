@@ -6,7 +6,7 @@ services:
           - '/opt:/opt'
           - '/home/${USER}:/home/petalinux'
           - '/local:/local'
-      image: adi_petalinux:2022.2
+      image: adi_petalinux:2022.1
       build: 
         context: .
         args:
