@@ -1,6 +1,7 @@
 version: '2.3'
 services:
-    adi_petalinux:
+    petalinux:
+      tty: true
       volumes:
           - '/opt:/opt'
           - '/home/${USER}:/home/mathworks'
