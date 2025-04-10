@@ -2,6 +2,7 @@ version: '2.3'
 services:
     petalinux:
       tty: true
+      container_name: 'petalinux_2021_2'
       volumes:
           - '/opt:/opt'
           - '/home/${USER}:/home/mathworks'
