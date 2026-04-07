@@ -1,18 +1,60 @@
-FROM ubuntu:20.04 AS mw_petalinux_base
+ARG UBUNTU_RELEASE=focal-20220531
+FROM ubuntu:${UBUNTU_RELEASE} AS mw_petalinux_base
 ARG PUID=1000
 ARG PGID=1000
-ARG PETALINUX_INSTALLATION_DIR=/opt/Xilinx/petalinux/2022.2
 
 RUN dpkg --add-architecture i386
 RUN apt-get update
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y iproute2 gawk python3 python build-essential \
-		gcc git make net-tools libncurses5-dev tftpd zlib1g-dev libssl-dev flex bison \
-		libselinux1 gnupg wget git-core diffstat chrpath socat xterm autoconf libtool tar \
-		unzip texinfo zlib1g-dev gcc-multilib automake zlib1g:i386 screen pax gzip cpio \
-		python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git \
-		python3-jinja2 libegl1-mesa libsdl1.2-dev bc pylint3 rsync lsb-release vim locales \
-		locales-all libtinfo5
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+autoconf \
+automake \
+bc \
+bison \
+build-essential \
+chrpath \
+cpio \
+debianutils \
+diffstat \
+flex \
+gawk \
+gcc \
+gcc-multilib \
+git \
+gnupg \
+gzip \
+iproute2 \
+iputils-ping \
+libegl1-mesa \
+libncurses-dev \
+libncurses5-dev \
+libsdl1.2-dev \
+libssl-dev \
+libtinfo5 \
+libtool \
+locales \
+locales-all \
+lsb-release \
+make \
+net-tools \
+pax \
+pylint3 \
+python3 \
+python3-git \
+python3-jinja2 \
+python3-pexpect \
+python3-pip \
+rsync \
+screen \
+socat \
+texinfo \
+tftpd-hpa \
+unzip \
+vim \
+xterm \
+xz-utils \
+zlib1g-dev \
+zlib1g:i386
 
 # set proper locale
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -29,6 +71,9 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 # not really necessary, just to make it easier to install packages on the run...
 RUN useradd -u $PUID -g $PGID -ms /bin/bash petalinux
 RUN echo "root:peta" | chpasswd
+
+ARG PETALINUX_RELEASE=2022.2
+ARG PETALINUX_INSTALLATION_DIR=/opt/Xilinx/petalinux/${PETALINUX_RELEASE}
 
 RUN mkdir -p ${PETALINUX_INSTALLATION_DIR}
 RUN chown $PUID:$PGID ${PETALINUX_INSTALLATION_DIR}
