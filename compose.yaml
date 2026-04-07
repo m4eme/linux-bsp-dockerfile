@@ -1,0 +1,14 @@
+name: mw_2022_2
+services:
+  petalinux:
+    image: mw_petalinux_install:2022.2
+    build:
+      tags:
+        - "mw_petalinux_install:2022.2"
+      args:
+        PUID: ${PUID}
+        PGID: ${PGID}
+    volumes:
+      - /local/mmate/work/Arxitec:/work
+      - /opt/Xilinx/petalinux/2022.2:/opt/Xilinx/petalinux/2022.2
+    tty: true
