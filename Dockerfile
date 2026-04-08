@@ -1,5 +1,5 @@
 ARG UBUNTU_RELEASE=focal-20220531
-FROM ubuntu:${UBUNTU_RELEASE} AS mw_petalinux_base
+FROM ubuntu:${UBUNTU_RELEASE} AS mw_petalinux
 ARG PUID=1000
 ARG PGID=1000
 
@@ -64,12 +64,10 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-# set bash as default shell
-RUN echo "dash dash/sh boolean false" | debconf-set-selections
-RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+RUN useradd -ms /bin/bash petalinux
 
 # not really necessary, just to make it easier to install packages on the run...
-RUN useradd -u $PUID -g $PGID -ms /bin/bash petalinux
 RUN echo "root:peta" | chpasswd
 
 ARG PETALINUX_RELEASE=2022.2
@@ -77,30 +75,35 @@ ARG PETALINUX_INSTALLATION_DIR=/opt/Xilinx/petalinux/${PETALINUX_RELEASE}
 
 RUN mkdir -p ${PETALINUX_INSTALLATION_DIR}
 RUN chown $PUID:$PGID ${PETALINUX_INSTALLATION_DIR}
-VOLUME /work
-
-USER petalinux
-
-
-FROM mw_petalinux_base AS mw_petalinux_install
-ARG PETALINUX_INSTALLER=petalinux-v2022.2-10141622-installer.run
-USER root
 RUN mkdir /tmp/petalinux_installer
-RUN chown $PUID:$PGID /tmp/petalinux_installer
+RUN chown petalinux /tmp/petalinux_installer
+
+# Cannot be root to install petalinux
 USER petalinux
+ARG PETALINUX_INSTALLER=petalinux-v2022.2-10141622-installer.run
 WORKDIR /tmp/petalinux_installer
 COPY --chmod=755 ${PETALINUX_INSTALLER} .
 RUN yes | ./${PETALINUX_INSTALLER} --dir ${PETALINUX_INSTALLATION_DIR}
 
-VOLUME /opt/yocto
 # Change back to root to install the launcher script
 # This has to be done after installing petalinux to not retrigger the
 # installer layer in Docker build
 USER root
 COPY --chmod=755 petalinux_launcher.sh /usr/bin/petalinux_launcher.sh
+VOLUME /work
+VOLUME /opt/yocto
 
-USER petalinux
 WORKDIR /work
 RUN rm -rf /tmp/petalinux_installer
+
+#RUN groupmod -g $PGID petalinux
+#RUN usermod -u $PUID -g $PGID petalinux
+#RUN chown -R petalinux:petalinux ${PETALINUX_INSTALLATION_DIR}
+
+# set bash as default shell
+RUN echo "dash dash/sh boolean false" | debconf-set-selections
+RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+USER petalinux
 ENV petalinux_dir=${PETALINUX_INSTALLATION_DIR}
 ENTRYPOINT [ "/usr/bin/petalinux_launcher.sh" ]

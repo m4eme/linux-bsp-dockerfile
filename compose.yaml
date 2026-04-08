@@ -1,20 +1,29 @@
 name: mw_petalinux
 services:
-  petalinux:
-    image: mw_petalinux_install:${PETALINUX_RELEASE}
+  petalinux-base:
+    image: mw_petalinux:${PETALINUX_RELEASE}
+    user: "${PUID}:${PGID}"
     build:
-      tags:
-        - "mw_petalinux_install:${PETALINUX_RELEASE}"
       args:
-        PUID: ${PUID}
-        PGID: ${PGID}
+        #PUID: ${PUID}
+        #PGID: ${PGID}
         PETALINUX_RELEASE: ${PETALINUX_RELEASE}
         PETALINUX_INSTALLER: ${PETALINUX_INSTALLER}
         UBUNTU_RELEASE: ${UBUNTU_RELEASE}
+
+  petalinux:
+    extends: petalinux-base
     volumes:
-      - .:/work
+      - ${PWD}:/work
 
   petalinux-cache:
-    extends: petalinux
+    extends: petalinux-base
     volumes:
       - /opt/yocto:/opt/yocto # For sstate cache
+
+  petalinux-runner:
+    extends: petalinux-base
+    user: "${RUNNER_PUID}:${RUNNER_PGID}"
+    build:
+      tags:
+        - "mw_petalinux_runner:${PETALINUX_RELEASE}"
