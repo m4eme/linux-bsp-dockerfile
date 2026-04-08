@@ -1,14 +1,16 @@
-name: mw_2022_2
+name: mw_petalinux
 services:
   petalinux:
-    image: mw_petalinux_install:2022.2
+    image: mw_petalinux_install:${PETALINUX_RELEASE}
     build:
       tags:
-        - "mw_petalinux_install:2022.2"
+        - "mw_petalinux_install:${PETALINUX_RELEASE}"
       args:
         PUID: ${PUID}
         PGID: ${PGID}
+        PETALINUX_RELEASE: ${PETALINUX_RELEASE}
+        PETALINUX_INSTALLER: ${PETALINUX_INSTALLER}
+        UBUNTU_RELEASE: ${UBUNTU_RELEASE}
     volumes:
-      - /local/mmate/work/Arxitec:/work
-      - /opt/Xilinx/petalinux/2022.2:/opt/Xilinx/petalinux/2022.2
-    tty: true
+      - ${WORKDIR}:/work
+      - /opt/yocto:/opt/yocto # For sstate cache

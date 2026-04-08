@@ -92,6 +92,7 @@ WORKDIR /tmp/petalinux_installer
 COPY --chmod=755 ${PETALINUX_INSTALLER} .
 RUN yes | ./${PETALINUX_INSTALLER} --dir ${PETALINUX_INSTALLATION_DIR}
 
+VOLUME /opt/yocto
 # Change back to root to install the launcher script
 # This has to be done after installing petalinux to not retrigger the
 # installer layer in Docker build
