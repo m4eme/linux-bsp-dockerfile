@@ -12,5 +12,9 @@ services:
         PETALINUX_INSTALLER: ${PETALINUX_INSTALLER}
         UBUNTU_RELEASE: ${UBUNTU_RELEASE}
     volumes:
-      - ${WORKDIR}:/work
+      - .:/work
+
+  petalinux-cache:
+    extends: petalinux
+    volumes:
       - /opt/yocto:/opt/yocto # For sstate cache
