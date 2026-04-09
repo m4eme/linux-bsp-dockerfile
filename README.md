@@ -49,7 +49,6 @@ Export UID and GID:
 ```
 export UID
 export GID=$(id -g)
-
 ```
 
 Once in the petalinux project directory on a symlink-free path, run a petalinux command:
