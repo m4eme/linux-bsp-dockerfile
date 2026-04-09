@@ -2,7 +2,7 @@ name: mw_petalinux
 services:
   petalinux-base:
     image: mw_petalinux:${PETALINUX_RELEASE}
-    user: "${PUID}:${PGID}"
+    user: "${UID}:${GID}"
     build:
       args:
         #PUID: ${PUID}
@@ -15,11 +15,13 @@ services:
     extends: petalinux-base
     volumes:
       - ${PWD}:/work
+    tty: true
 
   petalinux-cache:
-    extends: petalinux-base
+    extends: petalinux
     volumes:
       - /opt/yocto:/opt/yocto # For sstate cache
+    tty: true
 
   petalinux-runner:
     extends: petalinux-base

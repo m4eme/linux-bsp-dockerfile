@@ -9,9 +9,8 @@ PETALINUX_INSTALLER="petalinux-v2022.1-04191534-installer.run"
 UBUNTU_RELEASE="focal-20200729"
 
 # Release Independent
-# Your UID here
-PUID=1000
-# Your GID here
-PGID=1000
-WORKDIR='/local/mmate/work/project_name'
-
+# Export UID and GID on the shell
+# export UID
+# export GID=$(id -g)
+RUNNER_PUID=30001
+RUNNER_PGID=30467
