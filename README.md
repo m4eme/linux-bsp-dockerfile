@@ -1,10 +1,7 @@
-# linux-bsp-dockerfile
-Dockerfiles for various Linux-based BSP building environments
-- Petalinux 
-- Enclustra BSP build environment (buildroot based)
-  https://github.com/enclustra-bsp/bsp-xilinx
+# Petalinux Docker
+Compose and Dockerfile for Petalinux and Yocto (future)
 
-This repository contains a flexible Dockerfile and a build script to build ephemeral containers for using Petalinux and Yocto for Xilinx targets.
+This repository contains a flexible Dockerfile and a Docker compose yaml file to build ephemeral containers for using Petalinux and Yocto for Xilinx targets.
 
 ## Petalinux installers
 There are no public download links for Petalinux. The path to the desired Petalinux installer is passed as an build argument to the Dockerfile.
@@ -15,6 +12,7 @@ The recommended way to build the image is to use docker compose. Copy the the en
 * PETALINUX_RELEASE: e.g. 2022.2
 * PETALINUX_INSTALLER: path to the Petalinux installer e.g. petalinux-v2022.2-10141622-installer.run
 * UBUNTU_RELEASE: .e.g. "focal-20200729" exact image digest for the desired Ubuntu base image. Use this to prevent Docker from pulling versions outside the compatibility list. For example, pulling ubuntu:20.04 will pull 20.04.5 which is not in the list for Petalinux 2022.2
+* PACKAGE_FILE: path to a file containing a package list with one package per line. # is supported to comment lines out.
 
 * UID: uid of the desired petalinux user. The user must have access to the working folder
 * GID: group id of the desired group for the container user. The user must have access to the working folder

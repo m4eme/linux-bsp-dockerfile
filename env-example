@@ -7,6 +7,7 @@
 PETALINUX_RELEASE="2022.1"
 PETALINUX_INSTALLER="petalinux-v2022.1-04191534-installer.run"
 UBUNTU_RELEASE="focal-20200729"
+PACKAGE_FILE="package_list_2022"
 
 # Release Independent
 # Export UID and GID on the shell

@@ -2,60 +2,16 @@ ARG UBUNTU_RELEASE=focal-20220531
 FROM ubuntu:${UBUNTU_RELEASE} AS mw_petalinux
 ARG PUID=1000
 ARG PGID=1000
+SHELL ["/bin/bash", "-c"]
 
 RUN dpkg --add-architecture i386
 RUN apt-get update
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
-autoconf \
-automake \
-bc \
-bison \
-build-essential \
-chrpath \
-cpio \
-debianutils \
-diffstat \
-flex \
-gawk \
-gcc \
-gcc-multilib \
-git \
-gnupg \
-gzip \
-iproute2 \
-iputils-ping \
-libegl1-mesa \
-libncurses-dev \
-libncurses5-dev \
-libsdl1.2-dev \
-libssl-dev \
-libtinfo5 \
-libtool \
-locales \
-locales-all \
-lsb-release \
-make \
-net-tools \
-pax \
-pylint3 \
-python3 \
-python3-git \
-python3-jinja2 \
-python3-pexpect \
-python3-pip \
-rsync \
-screen \
-socat \
-texinfo \
-tftpd-hpa \
-unzip \
-vim \
-xterm \
-xz-utils \
-zlib1g-dev \
-zlib1g:i386
+ARG PACKAGE_FILE=packages_2022
+COPY ${PACKAGE_FILE} /tmp/
 
+RUN DEBIAN_FRONTEND=noninteractive \
+    xargs -a <(awk '/^\s*[^#$]/' /tmp/$(basename ${PACKAGE_FILE})) -r -- apt-get install -y 
 # set proper locale
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     locale-gen
@@ -93,6 +49,10 @@ COPY --chmod=755 petalinux_launcher.sh /usr/bin/petalinux_launcher.sh
 VOLUME /work
 VOLUME /opt/yocto
 
+# set bash as default shell
+RUN echo "dash dash/sh boolean false" | debconf-set-selections
+RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
 WORKDIR /work
 RUN rm -rf /tmp/petalinux_installer
 
@@ -100,9 +60,6 @@ RUN rm -rf /tmp/petalinux_installer
 #RUN usermod -u $PUID -g $PGID petalinux
 #RUN chown -R petalinux:petalinux ${PETALINUX_INSTALLATION_DIR}
 
-# set bash as default shell
-RUN echo "dash dash/sh boolean false" | debconf-set-selections
-RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
 USER petalinux
 ENV petalinux_dir=${PETALINUX_INSTALLATION_DIR}

@@ -10,6 +10,7 @@ services:
         PETALINUX_RELEASE: ${PETALINUX_RELEASE}
         PETALINUX_INSTALLER: ${PETALINUX_INSTALLER}
         UBUNTU_RELEASE: ${UBUNTU_RELEASE}
+        PACKAGE_FILE: ${PACKAGE_FILE}
 
   petalinux:
     extends: petalinux-base
